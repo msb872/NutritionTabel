@@ -2,10 +2,10 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تعیین گروه رنگی </title>
+  <title>محاسبه جدول رنگی مواد غذایی</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
   <header>
-  <h2> نرم افزار تعیین گروه رنگی برای مواد غذایی جامد و مایع v1.01</h2>
+  <h2> نرم افزار ساخت جدول نشانگر رنگی v1.01</h2>
 
 </header>
   <style>
@@ -150,7 +150,7 @@
   <!-- خوش‌آمدگویی -->
   <div id="welcomeOverlay">
     <div class="box">
-      <h1><br> نرم افزار تعیین گروه رنگی برای مواد غذایی جامد و مایع بر اساس آخرین ویرایش ضوابط برچسب گذاری سازمان غذا و دارو و نظارت بر مواد غذایی</br>
+      <h1><br> نرم افزار محاسبه جدول نشانگررنگی مواد غذایی بر اساس آخرین ویرایش ضوابط برچسب گذاری سازمان غذا ودارد و نظارت بر مواد غذایی</br>
       </h1>
       <div class="author">نویسنده: مصیب خانی – کارشناس کنترل کیفیت</div>
       <div class="spinner"></div>
@@ -251,7 +251,7 @@
     <button class="float-btn" title="ریست داده ها" onclick="clearInputs()">🔄</button>
     <button class="float-btn" title="ذخیره Excel" onclick="exportExcel()">📊</button>
     <button class="float-btn" title="پرینت جدول" onclick="printTable()">🖨️</button>
-    <button class="float-btn" title="ذخیره تصویر" onclick="saveAsJPG()">💾</button>
+    <button class="float-btn" title="ذخیره تصویر" onclick="saveAsPNG()">💾</button>
   </div>
 
   <!-- پنجره راهنما -->
@@ -268,7 +268,7 @@
         <li>برای پاک‌سازی دکمه «🔄» را بزنید.</li>
         <li>برای خروجی Excel دکمه «📊» و برای پرینت «🖨️» را فشار دهید.</li>
 	    <li>بعد از ذخیره فایل به صورت اکسل، ابتدا روی فایل راست کلیک کرده و تیک گزینه Unblock را فعال کرده و سپس فایل را باز کنید.</li>
-        <li>برای ذخیره JPG دکمه «💾» را انتخاب کنید.</li>
+        <li>برای ذخیره PNG دکمه «💾» را انتخاب کنید.</li>
       </ol>
       <div class="contact">
         <strong>نویسنده:</strong> مصیب خانی<br>
@@ -380,16 +380,19 @@
       document.getElementById("resultContainer").innerHTML = html;
     }
 
-    function saveAsJPG() {
-      const name = document.getElementById("foodName").value.trim() || 'table';
-      html2canvas(document.getElementById("exportArea"), { backgroundColor:'#fff', scale:2 })
-        .then(canvas => {
-          const link = document.createElement("a");
-          link.href = canvas.toDataURL("image/jpeg", 0.9);
-          link.download = `${name.replace(/\s+/g,'_')}.jpg`;
-          link.click();
-        });
-    }
+    function saveAsPNG() {
+  const name = document.getElementById("foodName").value.trim() || 'table';
+  html2canvas(document.getElementById("exportArea"), { 
+      backgroundColor: null,  // شفاف شدن پس‌زمینه
+      scale: 2
+  }).then(canvas => {
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");  // PNG24
+      link.download = `${name.replace(/\s+/g,'_')}.png`;
+      link.click();
+  });
+}
+
 
     function printTable() {
       window.print();
@@ -477,5 +480,3 @@
   </script>
 </body>
 </html>
-
-
