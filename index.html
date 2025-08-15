@@ -21,7 +21,7 @@
     }
     th, td {
       border: 1px solid #5300AD;
-      padding: 2px;
+      padding: 4px 6px;
       text-align: center;
       font-size: 14px;
     }
@@ -29,10 +29,11 @@
       background-color: #BEB567;
     }
     input, select {
-      width: 90%;
+      width: 100%;
       padding: 6px;
       font-size: 15px;
       margin: 4px 0;
+      box-sizing: border-box;
     }
     .green { background-color: #00FF00; color: #256029; }
     .orange { background-color: #FFAF1C; color: #000; }
@@ -70,6 +71,7 @@
         print-color-adjust: exact;
       }
     }
+
     #welcomeOverlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: linear-gradient(115deg, #2163EB, #2CA7EC);
@@ -77,18 +79,28 @@
       z-index: 200;
     }
     #welcomeOverlay .box {
-      background: #fff; padding: 50px; border-radius: 10px; text-align: center;
-      max-width: 600px; animation: fadeInOut 5s forwards;
+      background: #fff;
+      padding: 50px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 600px;
+      animation: fadeInOut 5s forwards;
     }
     #welcomeOverlay .box h1 {
-      margin: 0 0 10px; font-family: 'Dancing Script', cursive;
-      font-size: 22px; color: #000; line-height: 1.3;
+      margin-bottom: 10px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 22px;
+      color: #000;
+      line-height: 1.3;
     }
     #welcomeOverlay .author { font-size: 18px; margin-bottom: 15px; }
     #welcomeOverlay .spinner {
-      margin: 0 auto 15px; width: 40px; height: 40px;
-      border: 4px solid #f3f3f3; border-top: 4px solid #2563EB;
-      border-radius: 50%; animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+      width: 40px; height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #2563EB;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
     #welcomeOverlay .copyright {
       font-size: 14px; color: #666; margin-top: 10px;
@@ -97,6 +109,7 @@
     @keyframes fadeInOut {
       0%{opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{opacity:0;visibility:hidden;}
     }
+
     #helpOverlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.6); display: none;
@@ -162,12 +175,21 @@
     </tr>
     <tr>
       <th>واحد سهم</th>
-      <td><select id="servingUnit" onchange="render()"></select></td>
+      <td>
+        <select id="servingUnit" onchange="render()"></select>
+      </td>
     </tr>
     <tr>
       <th>معیار سهم</th>
       <td>
-        <input list="servingCriteria" id="servingCriterion" oninput="render()">
+        <input
+          type="text"
+          id="servingCriterion"
+          list="servingCriteria"
+          placeholder="جستجو یا وارد کنید"
+          oninput="render()"
+          autocomplete="off"
+        >
         <datalist id="servingCriteria">
           <option value="1 قاشق چایخوری">
           <option value="1 قاشق غذاخوری">
@@ -232,13 +254,13 @@
       <h2>راهنمای کار با نرم‌افزار</h2>
       <ol>
         <li>نام ماده غذایی را وارد کنید.</li>
-        <li>نوع (جامد/مایع) را انتخاب کنید تا واحدهای سهم به‌روز شوند.</li>
+        <li>نوع (جامد/مایع) را انتخاب کنید تا واحد سهم به‌روز شود.</li>
         <li>اندازه و معیار سهم را وارد کنید.</li>
         <li>مقادیر انرژی، قند، چربی، نمک و TFA را بر حسب 100 گرم وارد کنید.</li>
-        <li>با فشردن Enter به فیلد بعدی منتقل شوید.</li>
-        <li>برای پاک‌سازی فیلدها دکمه «🔄» را بزنید.</li>
-        <li>برای خروجی Excel با ساختار ورودی و پارامترها دکمه «📊» را انتخاب کنید.</li>
-        <li>برای پرینت رنگی جدول «🖨️» و برای ذخیره JPG «💾» را بزنید.</li>
+        <li>با زدن Enter به فیلد بعدی می‌روید.</li>
+        <li>برای پاک‌سازی دکمه «🔄» را بزنید.</li>
+        <li>برای خروجی Excel دکمه «📊» و برای پرینت «🖨️» را فشار دهید.</li>
+        <li>برای ذخیره JPG دکمه «💾» را انتخاب کنید.</li>
       </ol>
       <div class="contact">
         <strong>نویسنده:</strong> مصیب خانی<br>
@@ -248,8 +270,8 @@
       <div class="feedback">
         <strong>پیشنهادات و انتقادات:</strong>
         <ul>
-          <li>لطفاً نظرات و مشکلات را از طریق ایمیل بالا ارسال کنید.</li>
-          <li>برای گزارش باگ‌ها و درخواست ویژگی‌های جدید خوشحال می‌شویم همکاری کنید.</li>
+          <li>نظرات و مشکلات را از طریق ایمیل ارسال کنید.</li>
+          <li>برای گزارش باگ یا درخواست ویژگی جدید خوشحال می‌شویم.</li>
         </ul>
       </div>
     </div>
@@ -257,8 +279,8 @@
 
   <script>
     const rules = {
-      جامد:   { fat:[3,17.5], sugar:[5,22.5], salt:[0.3,1.5], trans:[0.5,2] },
-      مایع:   { fat:[1.5,8.75], sugar:[2.5,11.25], salt:[0.3,0.75], trans:[0.5,2] }
+      جامد: { fat:[3,17.5], sugar:[5,22.5], salt:[0.3,1.5], trans:[0.5,2] },
+      مایع: { fat:[1.5,8.75], sugar:[2.5,11.25], salt:[0.3,0.75], trans:[0.5,2] }
     };
     const translations = {
       'انرژی':'Energy','قند':'Sugar','چربی':'Fat',
@@ -269,12 +291,11 @@
       const type = document.getElementById("foodType").value;
       const sel  = document.getElementById("servingUnit");
       sel.innerHTML = "";
-      const units = type==="جامد"
-        ? ["گرم","عدد","تکه","اسلایس"]
-        : ["میلی‌لیتر","قاشق غذاخوری","فنجان"];
-      units.forEach(u=>{
+      const units = type === "جامد" ? ["گرم"] : ["میلی‌لیتر"];
+      units.forEach(u => {
         const o = document.createElement("option");
-        o.value = u; o.textContent = u;
+        o.value = u;
+        o.textContent = u;
         sel.appendChild(o);
       });
     }
@@ -291,8 +312,8 @@
     }
 
     function render() {
-      const name = document.getElementById("foodName").value.trim();
-      const size = +document.getElementById("servingSize").value || 0;
+      const name   = document.getElementById("foodName").value.trim();
+      const size   = +document.getElementById("servingSize").value || 0;
       if (!name || size <= 0) {
         document.getElementById("resultContainer").innerHTML = "";
         return;
@@ -301,32 +322,33 @@
       const unit = document.getElementById("servingUnit").value;
       const crit = document.getElementById("servingCriterion").value;
       const e100 = +document.getElementById("energy100").value || 0;
-      const s100 = +document.getElementById("sugar100").value || 0;
-      const f100 = +document.getElementById("fat100").value || 0;
-      const sa100= +document.getElementById("salt100").value || 0;
-      const t100 = +document.getElementById("trans100").value || 0;
+      const s100 = +document.getElementById("sugar100").value;
+      const f100 = +document.getElementById("fat100").value;
+      const sa100= +document.getElementById("salt100").value;
+      const t100 = +document.getElementById("trans100").value;
 
       const vals = [
         (e100 * size / 100).toFixed(2),
-        +(s100 * size / 100).toFixed(2),
-        +(f100 * size / 100).toFixed(2),
-        +(sa100* size / 100).toFixed(2),
-        +(t100 * size / 100).toFixed(2)
+        (s100 * size / 100).toFixed(2),
+        (f100 * size / 100).toFixed(2),
+        (sa100 * size / 100).toFixed(2),
+        (t100 * size / 100).toFixed(2)
       ];
       const keysFa = ['انرژی','قند','چربی','نمک','اسیدچرب ترانس'];
 
-      // مقادیر خام ورودی برای کنترل رنگ‌بندی
-      const rawSugar = document.getElementById("sugar100").value;
-      const rawFat   = document.getElementById("fat100").value;
-      const rawSalt  = document.getElementById("salt100").value;
-      const rawTrans = document.getElementById("trans100").value;
+      const raw = {
+        sugar: document.getElementById("sugar100").value,
+        fat:   document.getElementById("fat100").value,
+        salt:  document.getElementById("salt100").value,
+        trans: document.getElementById("trans100").value
+      };
 
       const classes = [
         "",
-        rawSugar ? getColor(vals[1], size, rules[type].sugar) : "",
-        rawFat   ? getColor(vals[2], size, rules[type].fat)   : "",
-        rawSalt  ? getColor(vals[3], size, rules[type].salt)  : "",
-        rawTrans ? getColor(vals[4], size, rules[type].trans) : ""
+        raw.sugar  ? getColor(vals[1], size, rules[type].sugar) : "",
+        raw.fat    ? getColor(vals[2], size, rules[type].fat)   : "",
+        raw.salt   ? getColor(vals[3], size, rules[type].salt)  : "",
+        raw.trans  ? getColor(vals[4], size, rules[type].trans) : ""
       ];
 
       const shareLabel = crit
@@ -338,13 +360,14 @@
             <th>اندازه سهم (${shareLabel})</th></tr>`;
 
       keysFa.forEach((fa, i) => {
-        const en       = translations[fa];
-        const unitLbl  = i === 0 ? 'کیلوکالری' : 'گرم';
+        const en      = translations[fa];
+        const unitLbl = i === 0 ? 'کیلوکالری' : 'گرم';
         html += `<tr class="${classes[i]}">
                    <td>${fa}/${en}</td>
                    <td>${vals[i]} ${unitLbl}</td>
                  </tr>`;
       });
+
       html += `</table>`;
       document.getElementById("resultContainer").innerHTML = html;
     }
@@ -367,6 +390,7 @@
     function clearInputs() {
       document.querySelectorAll("input").forEach(i => i.value = "");
       document.getElementById("foodType").value = "جامد";
+      document.getElementById("servingCriterion").value = "";
       updateServingUnits();
       document.getElementById("resultContainer").innerHTML = "";
     }
@@ -380,7 +404,7 @@
       const e100 = document.getElementById("energy100").value;
       const s100 = document.getElementById("sugar100").value;
       const f100 = document.getElementById("fat100").value;
-      const sa100= document.getElementById("salt100").value;
+      const sa100= document.getElementById("salt100").value; 
       const t100 = document.getElementById("trans100").value;
 
       let excel = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
@@ -425,12 +449,13 @@
       setTimeout(() => {
         document.getElementById("welcomeOverlay").style.display = 'none';
       }, 5000);
+
       const fields = Array.from(document.querySelectorAll("input, select"));
       fields.forEach((f, i) => {
         f.addEventListener("keydown", e => {
           if (e.key === 'Enter') {
             e.preventDefault();
-            fields[i+1]?.focus();
+            fields[i + 1]?.focus();
           }
         });
       });
