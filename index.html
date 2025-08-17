@@ -205,32 +205,48 @@ function clearInputs(){
   document.getElementById("resultContainer").innerHTML="";
 }
 
-function exportExcel(){
-  const name=document.getElementById("foodName").value.trim()||'table';
-  const type=document.getElementById("foodType").value;
-  const size=document.getElementById("servingSize").value;
-  const unit=document.getElementById("servingUnit").value;
-  const crit=document.getElementById("servingCriterion").value;
-  const e100=document.getElementById("energy100").value;
-  const s100=document.getElementById("sugar100").value;
-  const f100=document.getElementById("fat100").value;
-  const sa100=document.getElementById("salt100").value;
-  const t100=document.getElementById("trans100").value;
+function exportExcel() {
+      const name = document.getElementById("foodName").value.trim() || 'table';
+      const type = document.getElementById("foodType").value;
+      const size = document.getElementById("servingSize").value;
+      const unit = document.getElementById("servingUnit").value;
+      const crit = document.getElementById("servingCriterion").value;
+      const e100 = document.getElementById("energy100").value;
+      const s100 = document.getElementById("sugar100").value;
+      const f100 = document.getElementById("fat100").value;
+      const sa100= document.getElementById("salt100").value; 
+      const t100 = document.getElementById("trans100").value;
 
-  let excel=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"></head><body>`;
-  excel+=`<table><tr><th colspan="2">اطلاعات ورودی</th></tr>`;
-  excel+=`<tr><td>نام ماده غذایی</td><td>${name}</td></tr><tr><td>نوع</td><td>${type}</td></tr>`;
-  excel+=`<tr><td>اندازه سهم</td><td>${size} ${unit}</td></tr><tr><td>معیار سهم</td><td>${crit}</td></tr>`;
-  excel+=`<tr><td>انرژی</td><td>${e100} (100g)</td></tr><tr><td>قند</td><td>${s100} (100g)</td></tr>`;
-  excel+=`<tr><td>چربی</td><td>${f100} (100g)</td></tr><tr><td>نمک</td><td>${sa100} (100g)</td></tr>`;
-  excel+=`<tr><td>TFA</td><td>${t100} (100g)</td></tr></table></body></html>`;
-  const blob = new Blob([excel],{type:'application/vnd.ms-excel'});
-  const link = document.createElement("a");
-  link.href=URL.createObjectURL(blob);
-  link.download=`${name.replace(/\s+/g,'_')}.xls`;
-  link.click();
-}
+      let excel = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+        xmlns:x="urn:schemas-microsoft-com:office:excel">
+        <head><meta charset="utf-8"></head><body>`;
+      excel += `<table><tr><th colspan="2">اطلاعات ورودی</th></tr>`;
+      excel += `<tr><td>نام ماده غذایی</td><td>${name}</td></tr>`;
+      excel += `<tr><td>نوع</td><td>${type}</td></tr>`;
+      excel += `<tr><td>اندازه سهم</td><td>${size} ${unit}</td></tr>`;
+      excel += `<tr><td>معیار سهم</td><td>${crit}</td></tr>`;
+      excel += `<tr><td>انرژی</td><td>${e100} (100g)</td></tr>`;
+      excel += `<tr><td>قند</td><td>${s100} (100g)</td></tr>`;
+      excel += `<tr><td>چربی</td><td>${f100} (100g)</td></tr>`;
+      excel += `<tr><td>نمک</td><td>${sa100} (100g)</td></tr>`;
+      excel += `<tr><td>TFA</td><td>${t100} (100g)</td></tr>`;
+      excel += `<tr><th colspan="2">پارامترهای آستانه (100g)</th></tr>`;
+      ['جامد','مایع'].forEach(key => {
+        excel += `<tr><th colspan="2">${key}</th></tr>`;
+        ['sugar','fat','salt','trans'].forEach(n => {
+          const [g,o] = rules[key][n];
+          const label = {'sugar':'قند','fat':'چربی','salt':'نمک','trans':'TFA'}[n];
+          excel += `<tr><td>${label}</td><td>سالم ≤${g}, متوسط ≤${o}</td></tr>`;
+        });
+      });
+      excel += `</table></body></html>`;
 
+      const blob = new Blob([excel], { type:'application/vnd.ms-excel' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${name.replace(/\s+/g,'_')}.xls`;
+      link.click();
+    }
 function toggleHelp(){
   const overlay = document.getElementById("helpOverlay");
   overlay.style.display = overlay.style.display==='flex'?'none':'flex';
@@ -241,3 +257,4 @@ window.addEventListener("DOMContentLoaded",()=>{ updateServingUnits(); setTimeou
 
 </body>
 </html>
+
