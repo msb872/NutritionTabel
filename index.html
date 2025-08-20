@@ -67,9 +67,9 @@ input, select { width: 100%; padding: 6px; font-size: 15px; margin: 4px 0; box-s
 
 <!-- فرم ورودی -->
 <table>
-  <tr><th>نوع ماده غذایی</th><td>
-<tr><th>نام ماده غذایی</th><td><input type="text" id="foodName" oninput="render()"></td></tr>
 
+<tr><th>نام ماده غذایی</th><td><input type="text" id="foodName" oninput="render()"></td></tr>
+<tr><th>نوع ماده غذایی</th><td>
 <select id="foodType" onchange="updateServingUnits(); render()">
   <option value="جامد">جامد</option>
   <option value="مایع">مایع</option>
@@ -309,6 +309,7 @@ document.addEventListener("keydown", function(e) {
 
 </body>
 </html>
+
 
 
 
