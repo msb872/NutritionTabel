@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -125,8 +126,9 @@ input, select { width: 100%; padding: 6px; font-size: 15px; margin: 4px 0; box-s
 </div>
 
 <script>
+// قواعد پایه (حد سبز، حد نارنجی در 100 واحد، و «حد نارنجیِ سهم بزرگ»)
 const rules = {
-  جامد: { fat:[3,17.5,21], sugar:[5,22.5,27], salt:[0.3,1.5,1.8], trans:[0.5,2,2] },
+  جامد: { fat:[3,17.5,21], sugar:[5,22.5,27],  salt:[0.3,1.5,1.8], trans:[0.5,2,2] },
   مایع: { fat:[1.5,8.75,10.5], sugar:[2.5,11.25,13.5], salt:[0.3,0.75,0.9], trans:[0.5,2,2] }
 };
 const translations = { 'انرژی':'Energy','قند':'Sugar','چربی':'Fat','نمک':'Salt','اسیدچرب ترانس':'TFA' };
@@ -139,11 +141,30 @@ function updateServingUnits(){
   units.forEach(u=>{ const o=document.createElement("option"); o.value=u; o.textContent=u; sel.appendChild(o); });
 }
 
-function getColor(val, size, [g,o,max]) {
-  val = parseFloat(val);
-  if (val <= g) return "green";
-  if (val > g && val <= o) return "orange";
-  if (val > o || val > max && size>100) return "red";
+/* تابع رنگ‌دهی جدید بر اساس قوانین شما
+   - اگر سهم <= پایه (100g برای جامد | 150ml برای مایع): از [g, o] استفاده می‌شود.
+   - اگر سهم > پایه: از [g, max] استفاده می‌شود.
+   - g: آستانه سبز | o: آستانه نارنجی در 100 واحد | max: آستانه نارنجی در سهم بزرگ
+*/
+function getColor(val, size, [g, o, max]) {
+  const type = document.getElementById("foodType").value;
+  const baseLimit = (type === "مایع") ? 150 : 100;
+
+  const v = parseFloat(val);
+  const s = parseFloat(size);
+  if (isNaN(v)) return "";
+
+  // سهم بزرگ‌تر از حد پایه؟
+  if (!isNaN(s) && s > baseLimit) {
+    if (v <= g) return "green";
+    if (v > g && v <= max) return "orange";
+    if (v > max) return "red";
+  } else {
+    // سهم تا حد پایه (یا خالی/صفر)
+    if (v <= g) return "green";
+    if (v > g && v <= o) return "orange";
+    if (v > o) return "red";
+  }
   return "";
 }
 
@@ -160,16 +181,22 @@ function render(){
   const sa100= document.getElementById("salt100").value;
   const t100 = document.getElementById("trans100").value;
 
-  const vals = [(e100*size/100).toFixed(2),(s100*size/100).toFixed(2),(f100*size/100).toFixed(2),(sa100*size/100).toFixed(2),(t100*size/100).toFixed(2)];
+  const vals = [
+    (e100*size/100).toFixed(2),
+    (s100*size/100).toFixed(2),
+    (f100*size/100).toFixed(2),
+    (sa100*size/100).toFixed(2),
+    (t100*size/100).toFixed(2)
+  ];
   const keysFa = ['انرژی','قند','چربی','نمک','اسیدچرب ترانس'];
 
   const raw = { sugar:s100, fat:f100, salt:sa100, trans:t100 };
 
   const classes = [
-    "",
+    "", // انرژی رنگ ندارد
     raw.sugar!=="" ? getColor(s100,size,rules[type].sugar) : "",
-    raw.fat!=="" ? getColor(f100,size,rules[type].fat) : "",
-    raw.salt!=="" ? getColor(sa100,size,rules[type].salt) : "",
+    raw.fat!==""   ? getColor(f100,size,rules[type].fat)   : "",
+    raw.salt!==""  ? getColor(sa100,size,rules[type].salt) : "",
     raw.trans!=="" ? getColor(t100,size,rules[type].trans) : ""
   ];
 
@@ -206,55 +233,60 @@ function clearInputs(){
 }
 
 function exportExcel() {
-      const name = document.getElementById("foodName").value.trim() || 'table';
-      const type = document.getElementById("foodType").value;
-      const size = document.getElementById("servingSize").value;
-      const unit = document.getElementById("servingUnit").value;
-      const crit = document.getElementById("servingCriterion").value;
-      const e100 = document.getElementById("energy100").value;
-      const s100 = document.getElementById("sugar100").value;
-      const f100 = document.getElementById("fat100").value;
-      const sa100= document.getElementById("salt100").value; 
-      const t100 = document.getElementById("trans100").value;
+  const name = document.getElementById("foodName").value.trim() || 'table';
+  const type = document.getElementById("foodType").value;
+  const size = document.getElementById("servingSize").value;
+  const unit = document.getElementById("servingUnit").value;
+  const crit = document.getElementById("servingCriterion").value;
+  const e100 = document.getElementById("energy100").value;
+  const s100 = document.getElementById("sugar100").value;
+  const f100 = document.getElementById("fat100").value;
+  const sa100= document.getElementById("salt100").value; 
+  const t100 = document.getElementById("trans100").value;
 
-      let excel = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
-        xmlns:x="urn:schemas-microsoft-com:office:excel">
-        <head><meta charset="utf-8"></head><body>`;
-      excel += `<table><tr><th colspan="2">اطلاعات ورودی</th></tr>`;
-      excel += `<tr><td>نام ماده غذایی</td><td>${name}</td></tr>`;
-      excel += `<tr><td>نوع</td><td>${type}</td></tr>`;
-      excel += `<tr><td>اندازه سهم</td><td>${size} ${unit}</td></tr>`;
-      excel += `<tr><td>معیار سهم</td><td>${crit}</td></tr>`;
-      excel += `<tr><td>انرژی</td><td>${e100} (100g)</td></tr>`;
-      excel += `<tr><td>قند</td><td>${s100} (100g)</td></tr>`;
-      excel += `<tr><td>چربی</td><td>${f100} (100g)</td></tr>`;
-      excel += `<tr><td>نمک</td><td>${sa100} (100g)</td></tr>`;
-      excel += `<tr><td>TFA</td><td>${t100} (100g)</td></tr>`;
-      excel += `<tr><th colspan="2">پارامترهای آستانه (100g)</th></tr>`;
-      ['جامد','مایع'].forEach(key => {
-        excel += `<tr><th colspan="2">${key}</th></tr>`;
-        ['sugar','fat','salt','trans'].forEach(n => {
-          const [g,o] = rules[key][n];
-          const label = {'sugar':'قند','fat':'چربی','salt':'نمک','trans':'TFA'}[n];
-          excel += `<tr><td>${label}</td><td>سالم ≤${g}, متوسط ≤${o}</td></tr>`;
-        });
-      });
-      excel += `</table></body></html>`;
+  let excel = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+    xmlns:x="urn:schemas-microsoft-com:office:excel">
+    <head><meta charset="utf-8"></head><body>`;
+  excel += `<table><tr><th colspan="2">اطلاعات ورودی</th></tr>`;
+  excel += `<tr><td>نام ماده غذایی</td><td>${name}</td></tr>`;
+  excel += `<tr><td>نوع</td><td>${type}</td></tr>`;
+  excel += `<tr><td>اندازه سهم</td><td>${size} ${unit}</td></tr>`;
+  excel += `<tr><td>معیار سهم</td><td>${crit}</td></tr>`;
+  excel += `<tr><td>انرژی</td><td>${e100} (100g)</td></tr>`;
+  excel += `<tr><td>قند</td><td>${s100} (100g)</td></tr>`;
+  excel += `<tr><td>چربی</td><td>${f100} (100g)</td></tr>`;
+  excel += `<tr><td>نمک</td><td>${sa100} (100g)</td></tr>`;
+  excel += `<tr><td>TFA</td><td>${t100} (100g)</td></tr>`;
 
-      const blob = new Blob([excel], { type:'application/vnd.ms-excel' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `${name.replace(/\s+/g,'_')}.xls`;
-      link.click();
-    }
+  excel += `<tr><th colspan="2">پارامترهای آستانه</th></tr>`;
+  ['جامد','مایع'].forEach(key => {
+    const base = (key==='مایع')?'150 میلی‌لیتر':'100 گرم';
+    excel += `<tr><th colspan="2">${key}</th></tr>`;
+    ['sugar','fat','salt','trans'].forEach(n => {
+      const [g,o,max] = rules[key][n];
+      const label = {'sugar':'قند','fat':'چربی','salt':'نمک','trans':'TFA'}[n];
+      excel += `<tr><td>${label}</td><td>سبز ≤ ${g} (در 100 واحد) | نارنجی ≤ ${o} (در 100 واحد) | در سهم &gt; ${base}: نارنجی ≤ ${max}</td></tr>`;
+    });
+  });
+  excel += `</table></body></html>`;
+
+  const blob = new Blob([excel], { type:'application/vnd.ms-excel' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${name.replace(/\s+/g,'_')}.xls`;
+  link.click();
+}
+
 function toggleHelp(){
   const overlay = document.getElementById("helpOverlay");
   overlay.style.display = overlay.style.display==='flex'?'none':'flex';
 }
 
-window.addEventListener("DOMContentLoaded",()=>{ updateServingUnits(); setTimeout(()=>{document.getElementById("welcomeOverlay").style.display='none';},5000); });
+window.addEventListener("DOMContentLoaded",()=>{
+  updateServingUnits();
+  setTimeout(()=>{document.getElementById("welcomeOverlay").style.display='none';},5000);
+});
 </script>
 
 </body>
 </html>
-
