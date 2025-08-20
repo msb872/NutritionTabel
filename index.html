@@ -287,8 +287,26 @@ window.addEventListener("DOMContentLoaded",()=>{
   updateServingUnits();
   setTimeout(()=>{document.getElementById("welcomeOverlay").style.display='none';},5000);
 });
+  // حرکت بین فیلدها با کلید Enter
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    const inputs = Array.from(document.querySelectorAll("input, select"));
+    const index = inputs.indexOf(document.activeElement);
+
+    if (index > -1) {
+      e.preventDefault();
+      if (index + 1 < inputs.length) {
+        inputs[index + 1].focus();
+      } else {
+        render(); // اگر آخرین فیلد بود، رندر اجرا شود
+      }
+    }
+  }
+});
+
 </script>
 
 </body>
 </html>
+
 
