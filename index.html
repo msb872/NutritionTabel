@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -281,10 +280,8 @@
     </tr>
   </table>
 
-  <!-- ناحیه خروجی -->
-  <div id="exportArea">
-    <div id="resultContainer"></div>
-  </div>
+  <!-- خروجی -->
+  <div id="exportArea"><div id="resultContainer"></div></div>
 
   <!-- دکمه‌های شناور -->
   <div class="float-container">
@@ -295,186 +292,108 @@
     <button class="float-btn" title="ذخیره تصویر" onclick="saveAsPNG()">💾</button>
   </div>
 
-  <!-- پنجره راهنما -->
-  <div id="helpOverlay">
-    <div class="box">
-      <button class="close-btn" onclick="toggleHelp()">×</button>
-      <img src="https://www.1and1group.com/wp-content/uploads/2024/06/1and1group-logo.webp"
-           alt="Logo" style="width:100px; border-radius:10px; display:block; margin:0 auto 12px;">
-      <h2>راهنمای کار با نرم‌افزار</h2>
-      <ol>
-        <li>نام ماده غذایی را وارد کنید.</li>
-        <li>نوع (جامد/مایع) را انتخاب کنید تا واحد سهم به‌روز شود.</li>
-        <li>اندازه و معیار سهم را وارد کنید.</li>
-        <li>مقادیر انرژی، قند، چربی، نمک و TFA را بر حسب 100 گرم وارد کنید.</li>
-        <li>با زدن Enter به فیلد بعدی می‌روید.</li>
-        <li>برای پاک‌سازی «🔄» و خروجی Excel «📊» و پرینت «🖨️» استفاده کنید.</li>
-        <li>برای ذخیره PNG «💾» را بزنید.</li>
-      </ol>
-      <div class="contact">
-        <strong>نویسنده:</strong> مصیب خانی<br>
-        <strong>Mail:</strong>
-        <a href="mailto:mosayeb872@gmail.com" style="color:#d35400;">mosayeb872@gmail.com</a><br>
-        <strong>تلفن:</strong> 0917-320-6052
-      </div>
-    </div>
-  </div>
-
   <script>
     const rules = {
-      جامد: {
-        fat:   [3,   17.5, 21],
-        sugar: [5,   22.5, 27],
-        salt:  [0.3, 1.5,  1.8],
-        trans: [0.5, 2,    2]
-      },
-      مایع: {
-        fat:   [1.5, 8.75, 10.5],
-        sugar: [2.5, 11.25,13.5],
-        salt:  [0.3, 0.75, 0.9],
-        trans: [0.5, 2,    2]
-      }
+      جامد: { fat:[3,17.5,21], sugar:[5,22.5,27], salt:[0.3,1.5,1.8], trans:[0.5,2,2] },
+      مایع: { fat:[1.5,8.75,10.5], sugar:[2.5,11.25,13.5], salt:[0.3,0.75,0.9], trans:[0.5,2,2] }
     };
-    const translations = {
-      'انرژی':'Energy',
-      'قند':'Sugar',
-      'چربی':'Fat',
-      'نمک':'Salt',
-      'اسیدچرب ترانس':'TFA'
-    };
+    const translations = { 'انرژی':'Energy','قند':'Sugar','چربی':'Fat','نمک':'Salt','اسیدچرب ترانس':'TFA' };
 
-    function updateServingUnits() {
+    function updateServingUnits(){
       const type = document.getElementById("foodType").value;
       const sel  = document.getElementById("servingUnit");
-      sel.innerHTML = "";
-      const units = type === "جامد" ? ["گرم"] : ["میلی‌لیتر"];
-      units.forEach(u => {
-        const o = document.createElement("option");
-        o.value = u;
-        o.textContent = u;
-        sel.appendChild(o);
-      });
+      sel.innerHTML="";
+      const units = type==="جامد"?["گرم"]:["میلی‌لیتر"];
+      units.forEach(u=>{const o=document.createElement("option");o.value=u;o.textContent=u;sel.appendChild(o);});
     }
 
-    function getColor(amount, size, [g, o, m]) {
-      const type      = document.getElementById("foodType").value;
-      const baseLimit = (type === "مایع") ? 150 : 100;
-      const v = parseFloat(amount);
-      const s = parseFloat(size);
-      if (isNaN(v)) return "";
-      if (s > baseLimit) {
-        if (v <= g)          return "green";
-        if (v > g && v <= m) return "orange";
-        return "red";
+    function getColor(amount, size, [g,o,m]){
+      const type=document.getElementById("foodType").value;
+      const baseLimit=type==="مایع"?150:100;
+      const v=parseFloat(amount), s=parseFloat(size);
+      if(isNaN(v))return"";
+      if(s>baseLimit){
+        if(v<=g)return"green";
+        if(v>g&&v<=m)return"orange";
+        return"red";
       }
-      if (v <= g)          return "green";
-      if (v > g && v <= o) return "orange";
-      return "red";
+      if(v<=g)return"green";
+      if(v>g&&v<=o)return"orange";
+      return"red";
     }
 
-    function render() {
-      const name     = document.getElementById("foodName").value.trim();
-      const size     = +document.getElementById("servingSize").value || 0;
-      if (!name || size <= 0) {
-        document.getElementById("resultContainer").innerHTML = "";
-        return;
-      }
-      const type     = document.getElementById("foodType").value;
-      const unit     = document.getElementById("servingUnit").value;
-      const crit     = document.getElementById("servingCriterion").value;
-      const e100str  = document.getElementById("energy100").value;
-      const s100str  = document.getElementById("sugar100").value;
-      const f100str  = document.getElementById("fat100").value;
-      const sa100str = document.getElementById("salt100").value;
-      const t100str  = document.getElementById("trans100").value;
+    function render(){
+      const name=document.getElementById("foodName").value.trim();
+      const size=+document.getElementById("servingSize").value||0;
+      if(!name||size<=0){document.getElementById("resultContainer").innerHTML="";return;}
+      const type=document.getElementById("foodType").value;
+      const unit=document.getElementById("servingUnit").value;
+      const crit=document.getElementById("servingCriterion").value;
+      const e100str=document.getElementById("energy100").value;
+      const s100str=document.getElementById("sugar100").value;
+      const f100str=document.getElementById("fat100").value;
+      const sa100str=document.getElementById("salt100").value;
+      const t100str=document.getElementById("trans100").value;
 
-      // محاسبه «در سهم» فقط اگر ورودی خالی نباشد
-      const rawEnergy = e100str  !== "" ? (+e100str * size / 100) : NaN;
-      const rawSugar  = s100str  !== "" ? (+s100str * size / 100) : NaN;
-      const rawFat    = f100str  !== "" ? (+f100str * size / 100) : NaN;
-      const rawSalt   = sa100str !== "" ? (+sa100str * size / 100) : NaN;
-      const rawTrans  = t100str  !== "" ? (+t100str * size / 100) : NaN;
+      const rawEnergy=e100str!==""?(+e100str*size/100):NaN;
+      const rawSugar =s100str!==""?(+s100str*size/100):NaN;
+      const rawFat   =f100str!==""?(+f100str*size/100):NaN;
+      const rawSalt  =sa100str!==""?(+sa100str*size/100):NaN;
+      const rawTrans =t100str!==""?(+t100str*size/100):NaN;
 
-      const raws = [rawEnergy, rawSugar, rawFat, rawSalt, rawTrans];
-      const vals = raws.map(v => isNaN(v) ? "" : v.toFixed(2));
+      const raws=[rawEnergy,rawSugar,rawFat,rawSalt,rawTrans];
+      // نمایش تا ۳ رقم اعشار
+      const vals=raws.map(v=>isNaN(v)?"":v.toFixed(3));
 
-      const classes = [
+      const classes=[
         "",
-        !isNaN(raws[1]) ? getColor(raws[1], size, rules[type].sugar) : "",
-        !isNaN(raws[2]) ? getColor(raws[2], size, rules[type].fat)   : "",
-        !isNaN(raws[3]) ? getColor(raws[3], size, rules[type].salt)  : "",
-        !isNaN(raws[4]) ? getColor(raws[4], size, rules[type].trans) : ""
+        !isNaN(raws[1])?getColor(raws[1],size,rules[type].sugar):"",
+        !isNaN(raws[2])?getColor(raws[2],size,rules[type].fat):"",
+        !isNaN(raws[3])?getColor(raws[3],size,rules[type].salt):"",
+        !isNaN(raws[4])?getColor(raws[4],size,rules[type].trans):""
       ];
 
-      const shareLabel = crit
-        ? `${crit} ${name} – ${size} ${unit}`
-        : `${name} – ${size} ${unit}`;
+      const shareLabel=crit?`${crit} ${name} – ${size} ${unit}`:`${name} – ${size} ${unit}`;
 
-      let html = `<table>
-        <tr><th>ماده مغذی / Nutrient</th><th>اندازه سهم (${shareLabel})</th></tr>`;
-
-      ['انرژی','قند','چربی','نمک','اسیدچرب ترانس'].forEach((fa, i) => {
-        const en      = translations[fa];
-        const unitLbl = i === 0 ? 'کیلوکالری' : 'گرم';
-        html += `<tr class="${classes[i]}">
-          <td>${fa}/${en}</td>
-          <td>${vals[i]} ${unitLbl}</td>
-        </tr>`;
+      let html=`<table><tr><th>ماده مغذی / Nutrient</th><th>اندازه سهم (${shareLabel})</th></tr>`;
+      ['انرژی','قند','چربی','نمک','اسیدچرب ترانس'].forEach((fa,i)=>{
+        const en=translations[fa];
+        const unitLbl=i===0?'کیلوکالری':'گرم';
+        html+=`<tr class="${classes[i]}"><td>${fa}/${en}</td><td>${vals[i]} ${unitLbl}</td></tr>`;
       });
-
-      html += `</table>`;
-      document.getElementById("resultContainer").innerHTML = html;
+      html+=`</table>`;
+      document.getElementById("resultContainer").innerHTML=html;
     }
 
-    function saveAsPNG() {
-      const name = document.getElementById("foodName").value.trim() || 'table';
-      html2canvas(document.getElementById("exportArea"), { backgroundColor:null, scale:2 })
-        .then(canvas => {
-          const link = document.createElement("a");
-          link.href       = canvas.toDataURL("image/png");
-          link.download   = `${name.replace(/\s+/g,'_')}.png`;
-          link.click();
-        });
+    function saveAsPNG(){
+      const name=document.getElementById("foodName").value.trim()||'table';
+      html2canvas(document.getElementById("exportArea"),{backgroundColor:null,scale:2})
+        .then(canvas=>{const link=document.createElement("a");link.href=canvas.toDataURL("image/png");link.download=`${name.replace(/\s+/g,'_')}.png`;link.click();});
     }
-
-    function printTable() {
-      window.print();
-    }
-
-    function clearInputs() {
-      document.querySelectorAll("input").forEach(i => i.value = "");
-      document.getElementById("foodType").value        = "جامد";
-      document.getElementById("servingCriterion").value = "";
+    function printTable(){window.print();}
+    function clearInputs(){
+      document.querySelectorAll("input").forEach(i=>i.value="");
+      document.getElementById("foodType").value="جامد";
+      document.getElementById("servingCriterion").value="";
       updateServingUnits();
-      document.getElementById("resultContainer").innerHTML = "";
+      document.getElementById("resultContainer").innerHTML="";
     }
-
-    function exportExcel() {
-      // کد exportExcel مشابه نسخه قبل
-      // می‌توانید آن را از نمونه قبلی کپی کنید.
+    function exportExcel(){
+      /* مشابه قبل */
     }
-
-    function toggleHelp() {
-      const o = document.getElementById("helpOverlay");
-      o.style.display = (o.style.display === 'flex') ? 'none' : 'flex';
+    function toggleHelp(){
+      const o=document.getElementById("helpOverlay");
+      o.style.display=o.style.display==='flex'?'none':'flex';
     }
-
-    window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded",()=>{
       updateServingUnits();
-      setTimeout(() => {
-        document.getElementById("welcomeOverlay").style.display = 'none';
-      }, 5000);
+      setTimeout(()=>{document.getElementById("welcomeOverlay").style.display='none';},5000);
     });
-
-    document.addEventListener("keydown", e => {
-      if (e.key === "Enter") {
-        const inputs = Array.from(document.querySelectorAll("input, select"));
-        const idx    = inputs.indexOf(document.activeElement);
-        if (idx > -1) {
-          e.preventDefault();
-          if (idx + 1 < inputs.length) inputs[idx + 1].focus();
-          else render();
-        }
+    document.addEventListener("keydown",e=>{
+      if(e.key==="Enter"){
+        const inputs=Array.from(document.querySelectorAll("input, select"));
+        const i=inputs.indexOf(document.activeElement);
+        if(i>-1){e.preventDefault();i+1<inputs.length?inputs[i+1].focus():render();}
       }
     });
   </script>
