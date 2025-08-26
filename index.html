@@ -2,38 +2,39 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تعیین گروه رنگی مواد غذایی v1.1</title>
+  <title>تعیین گروه رنگی مواد غذایی v1.3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: Tahoma, sans-serif;
       background-color: #f9f9f9;
       direction: rtl;
-      padding: 10px;
+      padding: 5px;
     }
     header {
       background-color: #3D8632;
       color: #fff;
-      padding: 10px;
-      border-radius: 4px;
+      padding: 2px;
+      border-radius: 2px;
       text-align: center;
       margin-bottom: 15px;
     }
     header small {
       display: block;
       margin-top: 4px;
-      font-size: 12px;
+      font-size: 14px;
       color: #e0e0e0;
     }
     table {
       width: 100%;
       max-width: 600px;
-      margin: 0 auto 20px;
+      margin: 0 auto 10px;
       border-collapse: collapse;
       background-color: #fff;
     }
     th, td {
       border: 1px solid #5300AD;
-      padding: 8px;
+      padding: 2px;
       text-align: center;
       vertical-align: middle;
       font-size: 14px;
@@ -43,12 +44,13 @@
     }
     input, select {
       width: 100%;
-      padding: 6px;
-      margin: 4px 0;
+      padding: 8px;
+      margin: 1px 0;
       box-sizing: border-box;
       text-align: center;
       font-weight: bold;
-      height: 36px;
+      font-size: 16px;
+      height: 35px;
     }
     .green  { background-color: #7AB52A; color: #256029; }
     .orange { background-color: #FFCC00; color: #000; }
@@ -60,7 +62,7 @@
       right: 20px;
       display: flex;
       flex-direction: column-reverse;
-      gap: 8px;
+      gap: 10px;
       z-index: 100;
     }
     .float-btn {
@@ -86,59 +88,78 @@
       #exportArea { position: absolute; top: 0; left: 0; width: 100%; }
       table, th, td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
+    /* پنجره راهنما */
     #helpOverlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.6); display: none;
+      align-items: center; justify-content: center; z-index: 200;
     }
     #helpOverlay .box {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 500px;
-      width: 90%;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      text-align: right;
-      line-height: 1.6;
+      background-color: #fff; padding:20px; border-radius:8px;
+      max-width:500px; width:90%; position:relative;
+      box-shadow:0 4px 12px rgba(0,0,0,0.2); text-align:right;
+      line-height:1.6;
     }
     #helpOverlay .close-btn {
-      position: absolute;
-      top: 10px; left: 10px;
-      width: 28px; height: 28px;
-      border: none;
-      border-radius: 50%;
-      background-color: #e53e3e;
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
+      position:absolute; top:10px; left:10px;
+      width:28px; height:28px; border:none; border-radius:50%;
+      background-color:#e53e3e; color:#fff; font-size:18px;
+      cursor:pointer;
     }
-    #helpOverlay h3 {
-      margin-top: 0;
-      font-size: 18px;
-      text-align: center;
+    #helpOverlay h3 { margin-top:0; font-size:18px; text-align:center; }
+    #helpOverlay ol { padding-right:20px; }
+    #helpOverlay li { margin-bottom:8px; }
+    #helpOverlay .contact { margin-top:15px; font-size:14px; }
+    #helpOverlay .contact div { margin-bottom:4px; }
+
+    /* پیام خوش‌آمدگویی */
+    #welcomeOverlay {
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      background: linear-gradient(115deg, #2163EB, #2CA7EC);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 300;
     }
-    #helpOverlay ol {
-      padding-right: 20px;
+    #welcomeOverlay .box {
+      background: #fff; padding:40px; border-radius:12px;
+      text-align:center; max-width:500px; width:90%;
+      box-shadow:0 4px 12px rgba(0,0,0,0.3);
+      animation: fadeInOut 5s forwards;
     }
-    #helpOverlay li {
-      margin-bottom: 8px;
+    #welcomeOverlay .box h2 {
+      font-family:'Dancing Script', cursive; font-size:22px;
+      margin-bottom:10px; color:#333;
     }
-    #helpOverlay .contact {
-      margin-top: 15px;
-      font-size: 14px;
+    #welcomeOverlay .box p {
+      font-size:16px; color:#333; margin-bottom:15px;
     }
-    #helpOverlay .contact div {
-      margin-bottom: 4px;
+    #welcomeOverlay .spinner {
+      margin: 0 auto 15px; width:40px; height:40px;
+      border:4px solid #f3f3f3; border-top:4px solid #2563EB;
+      border-radius:50%; animation:spin 1s linear infinite;
+    }
+    #welcomeOverlay .box small {
+      display:block; margin-top:10px; font-size:13px; color:#666;
+    }
+    @keyframes spin { to{transform:rotate(360deg);} }
+    @keyframes fadeInOut {
+      0%{opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{opacity:0;visibility:hidden;}
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+
+  <!-- پیام خوش‌آمدگویی -->
+  <div id="welcomeOverlay">
+    <div class="box">
+      <img src="https://www.1and1group.com/wp-content/uploads/2024/06/1and1group-logo.webp"
+           alt="Logo" style="width:100px;border-radius:12px;margin-bottom:15px;">
+      <h2>به نرم‌افزار تعیین گروه رنگی مواد غذایی خوش آمدید</h2>
+      <p>این ابزار بر اساس آخرین ضوابط سازمان غذا و دارو طراحی و توسط<br><strong>مصیب خانی</strong> توسعه یافته است.</p>
+      <div class="spinner"></div>
+      <small>© 2025 آزمایشگاه و کنترل کیفیت فراورده‌های غذایی دشت مرغاب</small>
+    </div>
+  </div>
 
   <header>
     <h2>نرم‌افزار تعیین گروه رنگی مواد غذایی</h2>
@@ -147,12 +168,8 @@
 
   <!-- فرم ورودی -->
   <table>
-    <tr>
-      <th>نام ماده غذایی</th>
-      <td><input id="foodName" oninput="render()"></td>
-    </tr>
-    <tr>
-      <th>نوع (جامد/مایع)</th>
+    <tr><th>نام ماده غذایی</th><td><input id="foodName" oninput="render()"></td></tr>
+    <tr><th>نوع (جامد/مایع)</th>
       <td>
         <select id="foodType" onchange="updateServingUnits(); render()">
           <option value="جامد">جامد</option>
@@ -160,30 +177,22 @@
         </select>
       </td>
     </tr>
-    <tr>
-      <th>اندازه سهم</th>
-      <td><input type="number" id="servingSize" oninput="render()" placeholder="مثلاً 50"></td>
-    </tr>
-    <tr>
-      <th>واحد سهم</th>
-      <td><select id="servingUnit" onchange="render()"></select></td>
-    </tr>
-    <tr>
-      <th>معیار سهم</th>
-      <td>
-        <input id="servingCriterion" list="servingList" placeholder="جستجو یا وارد کنید" oninput="render()">
-        <datalist id="servingList">
-          <option value="1 قاشق چایخوری">
-          <option value="1 قاشق غذاخوری">
-          <option value="1 فنجان">
-          <option value="1 عدد">
-        </datalist>
-      </td>
-    </tr>
-    <tr>
-      <th>انرژی (kcal) در 100g</th>
-      <td><input type="number" id="energy100" oninput="render()"></td>
-    </tr>
+    <tr><th>اندازه سهم</th><td><input type="number" id="servingSize" oninput="render()" placeholder="مثلاً 50"></td></tr>
+    <tr><th>واحد سهم</th><td><select id="servingUnit" onchange="render()"></select></td></tr>
+    <tr><th>معیار سهم</th><td>
+      <input id="servingCriterion" list="servingList" placeholder="جستجو یا وارد کنید" oninput="render()">
+      <datalist id="servingList">
+        <option value="1 قاشق چایخوری"><option value="1 قاشق مرباخوری">
+        <option value="1 قاشق غذاخوری"><option value="2 قاشق غذاخوری">
+        <option value="1 فنجان"><option value="1/2 فنجان">
+        <option value="1/2 عدد"><option value="1 عدد"><option value="2 عدد">
+        <option value="3 عدد"><option value="5 عدد"><option value="7 عدد">
+        <option value="5 تکه"><option value="7 تکه">
+        <option value="10 اسلایس"><option value="11 اسلایس">
+        <option value="12 اسلایس"><option value="13 اسلایس">
+      </datalist>
+    </td></tr>
+    <tr><th>انرژی (kcal) در 100g</th><td><input type="number" id="energy100" oninput="render()"></td></tr>
     <tr><th>قند (g) در 100g</th><td><input type="number" id="sugar100" oninput="render()"></td></tr>
     <tr><th>چربی (g) در 100g</th><td><input type="number" id="fat100" oninput="render()"></td></tr>
     <tr><th>نمک (g) در 100g</th><td><input type="number" id="salt100" oninput="render()"></td></tr>
@@ -191,9 +200,7 @@
   </table>
 
   <!-- ناحیه خروجی -->
-  <div id="exportArea">
-    <div id="resultContainer"></div>
-  </div>
+  <div id="exportArea"><div id="resultContainer"></div></div>
 
   <!-- دکمه‌های شناور -->
   <div class="float-container">
@@ -212,11 +219,11 @@
       <ol>
         <li>نام محصول را وارد کنید.</li>
         <li>نوع (جامد/مایع) را انتخاب کنید.</li>
-        <li>اندازه سهم (گرم یا میلی‌لیتر) را وارد نمایید.</li>
-        <li>در معیار سهم مقدار دلخواه یا لیست پیشنهادی را استفاده کنید.</li>
-        <li>مقادیر انرژی، قند، چربی، نمک و TFA را بر اساس هر ۱۰۰g وارد کنید.</li>
-        <li>جدول رنگی خروجی با دقت سه رقم اعشار نمایش داده می‌شود.</li>
-        <li>برای پاکسازی «🔄»، Excel «📊»، چاپ «🖨️» و ذخیره تصویر «💾» از دکمه‌ها استفاده کنید.</li>
+        <li>اندازه سهم را وارد نمایید.</li>
+        <li>در معیار سهم مقدار دلخواه یا لیست را استفاده کنید.</li>
+        <li>مقادیر انرژی، قند، چربی، نمک و TFA را بر ۱۰۰g وارد کنید.</li>
+        <li>جدول رنگی با دقت سه رقم اعشار نمایش داده می‌شود.</li>
+        <li>برای Excel «📊»، پرینت «🖨️»، پاکسازی «🔄» و ذخیره تصویر «💾» کلیک کنید.</li>
       </ol>
       <div class="contact">
         <div><strong>نویسنده:</strong> مصیب خانی</div>
@@ -229,8 +236,8 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
-    // آستانه‌ها بر اساس نوع
     const thresholds = {
       جامد: {
         fat:   { base:100, small:[3,17.5], large:[21] },
@@ -245,13 +252,8 @@
         trans: { base:150, small:[0.5,2],     large:[2] }
       }
     };
-
     const translations = {
-      'انرژی':'Energy',
-      'قند':'Sugar',
-      'چربی':'Fat',
-      'نمک':'Salt',
-      'اسیدچرب ترانس':'TFA'
+      'انرژی':'Energy','قند':'Sugar','چربی':'Fat','نمک':'Salt','اسیدچرب ترانس':'TFA'
     };
 
     function updateServingUnits() {
@@ -284,21 +286,19 @@
         document.getElementById("resultContainer").innerHTML = "";
         return;
       }
+      const type     = document.getElementById("foodType").value;
+      const crit     = document.getElementById("servingCriterion").value;
+      const unit     = document.getElementById("servingUnit").value;
+      const e100     = +document.getElementById("energy100").value;
+      const s100     = +document.getElementById("sugar100").value;
+      const f100     = +document.getElementById("fat100").value;
+      const sa100    = +document.getElementById("salt100").value;
+      const t100     = +document.getElementById("trans100").value;
+      const sugarStr = document.getElementById("sugar100").value;
+      const fatStr   = document.getElementById("fat100").value;
+      const saltStr  = document.getElementById("salt100").value;
+      const transStr = document.getElementById("trans100").value;
 
-      const type      = document.getElementById("foodType").value;
-      const unit      = document.getElementById("servingUnit").value;
-      const crit      = document.getElementById("servingCriterion").value;
-      const e100      = +document.getElementById("energy100").value;
-      const s100      = +document.getElementById("sugar100").value;
-      const f100      = +document.getElementById("fat100").value;
-      const sa100     = +document.getElementById("salt100").value;
-      const t100      = +document.getElementById("trans100").value;
-      const sugarStr  = document.getElementById("sugar100").value;
-      const fatStr    = document.getElementById("fat100").value;
-      const saltStr   = document.getElementById("salt100").value;
-      const transStr  = document.getElementById("trans100").value;
-
-      // محاسبه مقادیر «در سهم»
       const raws = [
         isNaN(e100)  ? NaN : e100  * size/100,
         isNaN(s100)  ? NaN : s100  * size/100,
@@ -308,13 +308,12 @@
       ];
       const vals = raws.map(v => isNaN(v) ? "" : v.toFixed(3));
 
-      // تعیین کلاس رنگ یا سفید برای خالی بودن
       const classes = [
         '',
-        sugarStr === '' ? 'white' : getColor('sugar', s100, raws[1], size, type),
-        fatStr   === '' ? 'white' : getColor('fat',   f100, raws[2], size, type),
-        saltStr  === '' ? 'white' : getColor('salt',  sa100,raws[3], size, type),
-        transStr === '' ? 'white' : getColor('trans', t100, raws[4], size, type)
+        sugarStr === '' ? 'white' : getColor('sugar',  s100, raws[1], size, type),
+        fatStr   === '' ? 'white' : getColor('fat',    f100, raws[2], size, type),
+        saltStr  === '' ? 'white' : getColor('salt',   sa100, raws[3], size, type),
+        transStr === '' ? 'white' : getColor('trans',   t100, raws[4], size, type)
       ];
 
       const shareLabel = crit
@@ -322,13 +321,11 @@
         : `${name} – ${size} ${unit}`;
 
       let html = `<table>
-        <tr><th>ماده مغذی / Nutrient</th>
-            <th>سهم (${shareLabel})</th></tr>`;
-
-      ['انرژی','قند','چربی','نمک','اسیدچرب ترانس'].forEach((fa,i) => {
-        const en = translations[fa];
-        const ul = i===0 ? 'کیلوکالری' : 'گرم';
-        html += `<tr class="${classes[i]}"><td>${fa}/${en}</td><td>${vals[i]} ${ul}</td></tr>`;
+        <tr><th>ماده مغذی / Nutrient</th><th>سهم (${shareLabel})</th></tr>`;
+      ['انرژی','قند','چربی','نمک','اسیدچرب ترانس'].forEach((fa,i)=>{
+        const en      = translations[fa];
+        const unitLbl = i===0?'کیلوکالری':'گرم';
+        html += `<tr class="${classes[i]}"><td>${fa}/${en}</td><td>${vals[i]} ${unitLbl}</td></tr>`;
       });
       html += '</table>';
       document.getElementById("resultContainer").innerHTML = html;
@@ -349,8 +346,8 @@
       const name = document.getElementById("foodName").value.trim() || 'table';
       const html = document.getElementById("resultContainer").innerHTML;
       const blob = new Blob(
-        [`<html><head><meta charset="utf-8"></head><body>${html}</body></html>`],
-        { type: 'application/vnd.ms-excel' }
+        [`<html><meta charset="utf-8"><body>${html}</body></html>`],
+        { type:'application/vnd.ms-excel' }
       );
       const link = document.createElement("a");
       link.href     = URL.createObjectURL(blob);
@@ -358,9 +355,7 @@
       link.click();
     }
 
-    function printTable() {
-      window.print();
-    }
+    function printTable() { window.print(); }
 
     function clearInputs() {
       document.querySelectorAll("input").forEach(i => i.value = "");
@@ -375,8 +370,12 @@
       overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", ()=>{
       updateServingUnits();
+      setTimeout(()=>{
+        const w = document.getElementById("welcomeOverlay");
+        if (w) w.style.display = 'none';
+      }, 5000);
     });
 
     document.addEventListener("keydown", e => {
