@@ -321,7 +321,7 @@
         : `${name} – ${size} ${unit}`;
 
       let html = `<table>
-        <tr><th>ماده مغذی / Nutrient</th><th>سهم (${shareLabel})</th></tr>`;
+        <tr><th>ماده مغذی / Nutrient</th><th> اندازه سهم(${shareLabel})</th></tr>`;
       ['انرژی','قند','چربی','نمک','اسیدچرب ترانس'].forEach((fa,i)=>{
         const en      = translations[fa];
         const unitLbl = i===0?'کیلوکالری':'گرم';
@@ -392,4 +392,5 @@
   </script>
 </body>
 </html>
+
 
